@@ -274,7 +274,7 @@
             
             { mn: "Би аливаа зүйлийн учир шалтгааныг гүнзгий судалж, ойлгохыг хүсдэг.", en: "I want to deeply study and understand the underlying causes of things.", type: 5 },
             { mn: "Надад ганцаараа байж, эрч хүчээ нөхөх цаг хугацаа маш их хэрэгтэй.", en: "I need a lot of time alone to recharge my energy.", type: 5 },
-            { mn: "Би сэтгэл хөдлөлөө илэрхийлэхээс илүү баримт, логикт тулгуурладаг.", en: "I rely more on facts and logic than on expressing emotions.", type: 5 },
+            { mn: "Би аливаа асуудалд сэтгэл хөдлөлөөр хандахаас илүү баримт, логикт тулгуурладаг.", en: "I rely more on facts and logic than on expressing emotions.", type: 5 },
             { mn: "Хүмүүс миний хувийн орон зайд хэт халдахад надад таагүй байдаг.", en: "I feel uncomfortable when people intrude too much into my personal space.", type: 5 },
             { mn: "Би шийдвэр гаргахаасаа өмнө бүх мэдээллийг цуглуулж, дүн шинжилгээ хийдэг.", en: "I gather and analyze all information before making a decision.", type: 5 },
             
@@ -377,20 +377,17 @@
                 return;
             }
 
-            // Бүх зүйл зөв бөглөгдсөн бол оноог бодох
+           // Бүх зүйл зөв бөглөгдсөн бол оноог бодох
             let scores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-            let rawAnswersArray = []; 
 
-            // Мэдээллийг raw string-д нэмэх
-            rawAnswersArray.push(`Нэр:${userName.value}`, `Нас:${userAge.value}`, `Хүйс:${userGender.value}`);
-
+            // 1. Асуулт бүрийн хариултыг нэмж оноог тооцоолох (Сая энэ хэсэг устсан байсан)
             questionsData.forEach((q, index) => {
                 const qNum = index + 1;
                 const answer = formData.get(`q${qNum}`);
                 scores[q.type] += parseInt(answer);
-                rawAnswersArray.push(`Q${qNum}-${answer}`);
             });
 
+            // 2. Хамгийн өндөр оноотой төрлийг олох
             let maxType = 1;
             let maxScore = scores[1];
 
@@ -401,11 +398,19 @@
                 }
             }
 
+            // 3. Дэлгэцэнд хамгийн өндөр оноотой ҮНДСЭН ТӨРЛИЙГ харуулах
             document.getElementById('result-type-display').innerText = enneagramTypes[maxType];
-            
-            const rawAnswersString = rawAnswersArray.join(', ');
-            document.getElementById('raw-answers-display').innerText = rawAnswersString;
 
+            // 4. 9 төрлийн оноог нэгтгэж текст бэлтгэх
+            let scoreString = `Төрөл 1: ${scores[1]}, Төрөл 2: ${scores[2]}, Төрөл 3: ${scores[3]}, Төрөл 4: ${scores[4]}, Төрөл 5: ${scores[5]}, Төрөл 6: ${scores[6]}, Төрөл 7: ${scores[7]}, Төрөл 8: ${scores[8]}, Төрөл 9: ${scores[9]}`;
+            
+            // 5. Хуулах хэсэгт харагдах эцсийн текст (Танд илгээх зориулалттай)
+            let finalCopyText = `Нэр: ${userName.value}\nНас: ${userAge.value}\nХүйс: ${userGender.value}\nТестийн оноо: ${scoreString}`;
+
+            document.getElementById('raw-answers-display').innerText = finalCopyText;
+            document.getElementById('raw-answers-display').style.whiteSpace = "pre-wrap";
+
+            // 6. Үр дүнгийн хайрцгийг дэлгэцэнд ил гаргах болон доош гүйлгэх
             document.getElementById('result-container').style.display = 'block';
             document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
         });
