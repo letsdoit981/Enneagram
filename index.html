@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enneagram Сэтгэл Зүйн Тест</title>
     <style>
+        /* Вэб хуудсыг бүхэлд нь Select хийхийг хориглох хамгаалалт */
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            user-select: none; 
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
         :root {
             --primary-color: #4A90E2;
             --bg-color: #f4f7f6;
@@ -13,15 +28,7 @@
             --error-bg: #ffeef0;
             --error-border: #ffc2c2;
         }
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        
         h1 {
             text-align: center;
             color: var(--primary-color);
@@ -65,6 +72,10 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1em;
+            outline: none;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary-color);
         }
         .input-group input.error-input, .input-group select.error-input {
             border-color: #d9534f;
@@ -86,19 +97,8 @@
             border-color: var(--error-border);
         }
         
-        /* Асуултын текстийн дизайн (Хос хэл) */
-        .question-text-mn {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #222;
-            margin-bottom: 5px;
-        }
-        .question-text-en {
-            font-size: 0.95em;
-            font-style: italic;
-            color: #777;
-            margin-bottom: 15px;
-        }
+        .question-text-mn { font-size: 1.1em; font-weight: bold; color: #222; margin-bottom: 5px; }
+        .question-text-en { font-size: 0.95em; font-style: italic; color: #777; margin-bottom: 15px; }
 
         .options-container {
             display: flex;
@@ -125,7 +125,6 @@
             cursor: pointer;
         }
         
-        /* Алдааны мэдээлэл болон товч */
         #validation-msg {
             display: none;
             color: #d9534f;
@@ -145,6 +144,7 @@
             font-size: 1.2em;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-bottom: 40px;
         }
         button.submit-btn:hover {
             background-color: #357abd;
@@ -154,32 +154,37 @@
         #result-container {
             display: none;
             background-color: var(--card-bg);
-            padding: 30px;
+            padding: 40px 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
             text-align: center;
             border-top: 5px solid var(--primary-color);
         }
-        .result-title { font-size: 1.5em; margin-bottom: 10px; }
-        .result-type { font-size: 2em; font-weight: bold; color: var(--primary-color); margin-bottom: 20px; }
+        .success-icon { font-size: 50px; margin-bottom: 15px; }
+        .result-title { font-size: 1.8em; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .result-desc { color: #555; margin-bottom: 25px; font-size: 1em; }
+        
         .copy-section {
             background-color: #f9f9f9;
             border: 1px dashed #ccc;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
-            margin-top: 25px;
-            text-align: left;
+            margin-top: 20px;
         }
-        .copy-instruction { font-weight: bold; color: #d9534f; margin-bottom: 15px; text-align: center; }
-        .raw-data-box {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px;
+        .copy-instruction { font-weight: bold; color: #333; margin-bottom: 15px; text-align: center; }
+        
+        /* Зөвхөн хариу гардаг textarea дээр л select хийхийг зөвшөөрнө */
+        #finalDataToCopy { 
+            width: 100%; height: 80px; padding: 15px; border-radius: 8px; border: 2px dashed #4A90E2; 
+            font-family: monospace; font-size: 16px; font-weight: bold; margin-bottom: 15px; resize: none; 
+            background: #fff; box-sizing: border-box; color: var(--primary-color); text-align: center; outline: none;
+            user-select: text !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important;
         }
-        .raw-text { word-break: break-all; font-family: monospace; color: #555; font-size: 0.9em; padding-right: 15px; }
+
         button.copy-btn {
-            padding: 10px 15px; background-color: #5cb85c; color: white; border: none;
-            border-radius: 4px; cursor: pointer; white-space: nowrap; transition: background-color 0.3s;
+            padding: 12px 30px; background-color: #5cb85c; color: white; border: none; font-size: 1.1em;
+            border-radius: 5px; cursor: pointer; white-space: nowrap; transition: background-color 0.3s; font-weight: bold;
         }
         button.copy-btn:hover { background-color: #4cae4c; }
         
@@ -190,62 +195,68 @@
 </head>
 <body>
 
-    <h1>Enneagram Хувь Хүний Тест</h1>
-    <div class="intro-text">
-        <strong>Enneagram (Эннеаграм) гэж юу вэ?</strong><br>
-        Enneagram бол бидний үйлдэл бүрийн цаана нуугдаж байдаг хамгийн гүн сэдэл, айдас, хүсэл буюу "ЯАГААД" ингэж авирладаг болохыг илрүүлдэг сэтгэл судлалын гүнзгийрүүлсэн систем юм.  Энэхүү тестийг дэлхий даяар хувь хүний хөгжил, карьер чиглүүлэлт, манлайлал болон гэр бүлийн сэтгэл засалд өргөнөөр ашигладаг бөгөөд таныг өөрийгөө илүү гүн танин мэдэхэд тусална.
-    </div>
-
-    <form id="enneagramForm" novalidate>
-        
-        <div class="user-info-section">
-            <div class="input-group">
-                <label for="userName">Нэр</label>
-                <input type="text" id="userName" name="userName" placeholder="Таны нэр" required>
-            </div>
-            <div class="input-group">
-                <label for="userAge">Нас</label>
-                <input type="number" id="userAge" name="userAge" placeholder="Таны нас" required>
-            </div>
-            <div class="input-group">
-                <label for="userGender">Хүйс</label>
-                <select id="userGender" name="userGender" required>
-                    <option value="" disabled selected>Сонгох...</option>
-                    <option value="Эрэгтэй">Эрэгтэй</option>
-                    <option value="Эмэгтэй">Эмэгтэй</option>
-                    <option value="Бусад">Бусад</option>
-                </select>
-            </div>
+    <div id="testSection">
+        <h1>Enneagram Хувь Хүний Тест</h1>
+        <div class="intro-text">
+            <strong>Enneagram (Эннеаграм) гэж юу вэ?</strong><br>
+            Enneagram бол бидний үйлдэл бүрийн цаана нуугдаж байдаг хамгийн гүн сэдэл, айдас, хүсэл буюу "ЯАГААД" ингэж авирладаг болохыг илрүүлдэг сэтгэл судлалын гүнзгийрүүлсэн систем юм. Энэхүү тестийг дэлхий даяар хувь хүний хөгжил, карьер чиглүүлэлт, манлайлал болон гэр бүлийн сэтгэл засалд өргөнөөр ашигладаг бөгөөд таныг өөрийгөө илүү гүн танин мэдэхэд тусална.
         </div>
 
-        <div id="questions-wrapper"></div>
-        
-        <div id="validation-msg">Уучлаарай, та мэдээллээ болон зарим асуултыг дутуу бөглөсөн байна. Улаанаар тэмдэглэсэн хэсгүүдийг шалгана уу!</div>
-        <button type="button" id="submitBtn" class="submit-btn">Үр дүн харах</button>
-    </form>
+        <form id="enneagramForm" novalidate>
+            <div class="user-info-section">
+                <div class="input-group">
+                    <label for="userName">Нэр (заавал биш)</label>
+                    <input type="text" id="userName" name="userName" placeholder="Таны нэр">
+                </div>
+                <div class="input-group">
+                    <label for="userAge">Нас</label>
+                    <input type="number" id="userAge" name="userAge" placeholder="Таны нас" required>
+                </div>
+                <div class="input-group">
+                    <label for="userGender">Хүйс</label>
+                    <select id="userGender" name="userGender" required>
+                        <option value="" disabled selected>Сонгох...</option>
+                        <option value="Male">Эрэгтэй</option>
+                        <option value="Female">Эмэгтэй</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="questions-wrapper"></div>
+            
+            <div id="validation-msg">Уучлаарай, та нас, хүйсээ болон зарим асуултыг дутуу бөглөсөн байна. Улаанаар тэмдэглэсэн хэсгүүдийг шалгана уу!</div>
+            <button type="button" id="submitBtn" class="submit-btn">Үр дүнг илгээх</button>
+        </form>
+    </div>
 
     <div id="result-container">
-        <div class="result-title">Таны үндсэн Enneagram төрөл:</div>
-        <div class="result-type" id="result-type-display"></div>
-        <p>Бидний дотор бүх төрлийн шинж чанар байдаг ч энэхүү төрөл нь таны хамгийн их давамгайлсан хандлагыг илэрхийлж байна.</p>
+        <div class="success-icon">🎉</div>
+        <div class="result-title">Тест амжилттай дууслаа</div>
+        <p class="result-desc">Таны хариултууд системд амжилттай бодогдлоо.</p>
         
         <div class="copy-section">
-            <p class="copy-instruction">Та үр дүнгийн талаар илүү дэлгэрэнгүй, мэргэжлийн тайлбар авахыг хүсвэл доорх хариуг хуулж аваад бидэнд илгээнэ үү. Баярлалаа!</p>
-            <div class="raw-data-box">
-                <div class="raw-text" id="raw-answers-display"></div>
-                <button type="button" class="copy-btn" id="copyBtn">Хуулах</button>
-            </div>
+            <p class="copy-instruction">Доорх кодыг хуулж аваад өөрийн зөвлөх рүү илгээж дэлгэрэнгүй тайлбараа авна уу.</p>
+            <textarea id="finalDataToCopy" readonly></textarea>
+            <br>
+            <button type="button" class="copy-btn" id="copyBtn">Кодыг хуулж авах 📋</button>
+        </div>
+        
+        <div style="text-align:center; margin-top:30px;">
+            <button style="padding:10px 20px; border:none; border-radius:5px; background:#95a5a6; color:white; cursor:pointer;" onclick="location.reload()">Дахин эхлэх</button>
         </div>
     </div>
 
     <script>
-        const enneagramTypes = {
-            1: "Төрөл 1: Шинэчлэгч (The Reformer)", 2: "Төрөл 2: Туслагч (The Helper)",
-            3: "Төрөл 3: Амжилтад хүрэгч (The Achiever)", 4: "Төрөл 4: Өвөрмөц нэгэн (The Individualist)",
-            5: "Төрөл 5: Судлаач (The Investigator)", 6: "Төрөл 6: Үнэнч нэгэн (The Loyalist)",
-            7: "Төрөл 7: Урам зоригт нэгэн (The Enthusiast)", 8: "Төрөл 8: Сорилтыг сөрөгч (The Challenger)",
-            9: "Төрөл 9: Энхийг сахиулагч (The Peacemaker)"
-        };
+        // Хулганы баруун товч (Context Menu) болон Ctrl+C (Copy) хаах JS
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('copy', event => {
+            if (event.target.id !== 'finalDataToCopy') event.preventDefault();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && (e.key === 's' || e.key === 'p' || e.key === 'c')) {
+                if (e.target.id !== 'finalDataToCopy') e.preventDefault();
+            }
+        });
 
         const questionsData = [
             { mn: "Би аливаа зүйлийг төгс, зөв хийхийг үргэлж хичээдэг.", en: "I always strive to do things perfectly and correctly.", type: 1 },
@@ -306,7 +317,6 @@
         const scaleLabels = ["Огт санал нийлэхгүй", "Бага зэрэг", "Дунд зэрэг", "Ихэнхдээ", "Бүрэн санал нийлнэ"];
         const wrapper = document.getElementById('questions-wrapper');
 
-        // Асуултуудыг рендер хийх (Хос хэлтэй)
         questionsData.forEach((q, index) => {
             const qNum = index + 1;
             let optionsHTML = '';
@@ -331,19 +341,16 @@
             wrapper.innerHTML += cardHTML;
         });
 
-        // Тусгай Validation логик
         document.getElementById('submitBtn').addEventListener('click', function() {
             let isValid = true;
             let firstErrorElement = null;
             const validationMsg = document.getElementById('validation-msg');
             validationMsg.style.display = 'none';
 
-            // 1. Хэрэглэгчийн мэдээллийг шалгах
-            const userName = document.getElementById('userName');
             const userAge = document.getElementById('userAge');
             const userGender = document.getElementById('userGender');
 
-            [userName, userAge, userGender].forEach(input => {
+            [userAge, userGender].forEach(input => {
                 if (!input.value) {
                     input.classList.add('error-input');
                     isValid = false;
@@ -353,7 +360,6 @@
                 }
             });
 
-            // 2. Асуултуудыг шалгах
             const formElement = document.getElementById('enneagramForm');
             const formData = new FormData(formElement);
             
@@ -370,67 +376,48 @@
                 }
             });
 
-            // 3. Алдаа гарсан бол гүйлгэж очоод зогсох
             if (!isValid) {
                 validationMsg.style.display = 'block';
                 firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
 
-           // Бүх зүйл зөв бөглөгдсөн бол оноог бодох
             let scores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
 
-            // 1. Асуулт бүрийн хариултыг нэмж оноог тооцоолох (Сая энэ хэсэг устсан байсан)
             questionsData.forEach((q, index) => {
                 const qNum = index + 1;
                 const answer = formData.get(`q${qNum}`);
                 scores[q.type] += parseInt(answer);
             });
 
-            // 2. Хамгийн өндөр оноотой төрлийг олох
-            let maxType = 1;
-            let maxScore = scores[1];
-
-            for (let type = 2; type <= 9; type++) {
-                if (scores[type] > maxScore) {
-                    maxScore = scores[type];
-                    maxType = type;
-                }
-            }
-
-            // 3. Дэлгэцэнд хамгийн өндөр оноотой ҮНДСЭН ТӨРЛИЙГ харуулах
-            document.getElementById('result-type-display').innerText = enneagramTypes[maxType];
-
-            // 4. 9 төрлийн оноог нэгтгэж текст бэлтгэх
-            let scoreString = `Төрөл 1: ${scores[1]}, Төрөл 2: ${scores[2]}, Төрөл 3: ${scores[3]}, Төрөл 4: ${scores[4]}, Төрөл 5: ${scores[5]}, Төрөл 6: ${scores[6]}, Төрөл 7: ${scores[7]}, Төрөл 8: ${scores[8]}, Төрөл 9: ${scores[9]}`;
-            
-            // 5. Хуулах хэсэгт харагдах эцсийн текст (Танд илгээх зориулалттай)
-            let finalCopyText = `Нэр: ${userName.value}\nНас: ${userAge.value}\nХүйс: ${userGender.value}\nТестийн оноо: ${scoreString}`;
-
-            document.getElementById('raw-answers-display').innerText = finalCopyText;
-            document.getElementById('raw-answers-display').style.whiteSpace = "pre-wrap";
-
-            // 6. Үр дүнгийн хайрцгийг дэлгэцэнд ил гаргах болон доош гүйлгэх
+            // Үндсэн хэсгийг нууж, үр дүнгийн хайрцгийг гаргах
+            document.getElementById('testSection').style.display = 'none';
             document.getElementById('result-container').style.display = 'block';
-            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+            window.scrollTo(0, 0);
+
+            // Дарааллын нууцлал бүхий код (AI тааж чадахгүй)
+            // Format: ENX:[Age-Gender]|Score1.Score2.Score3.Score4.Score5.Score6.Score7.Score8.Score9
+            const secretCode = `ENX:[${userAge.value}-${userGender.value}]|${scores[1]}.${scores[2]}.${scores[3]}.${scores[4]}.${scores[5]}.${scores[6]}.${scores[7]}.${scores[8]}.${scores[9]}`;
+            
+            document.getElementById('finalDataToCopy').value = secretCode;
         });
 
-        // Хуулах товч
         document.getElementById('copyBtn').addEventListener('click', function() {
-            const textToCopy = document.getElementById('raw-answers-display').innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const btn = document.getElementById('copyBtn');
-                btn.innerText = "Хуулагдлаа!";
-                btn.style.backgroundColor = "#449d44"; 
-                
-                setTimeout(() => {
-                    btn.innerText = "Хуулах";
-                    btn.style.backgroundColor = "#5cb85c";
-                }, 2000);
-            }).catch(err => console.error('Хуулахад алдаа гарлаа: ', err));
+            const copyText = document.getElementById("finalDataToCopy");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "Хуулагдлаа! ✅";
+            btn.style.backgroundColor = "#449d44"; 
+            
+            setTimeout(() => {
+                btn.innerText = "Кодыг хуулж авах 📋";
+                btn.style.backgroundColor = "#5cb85c";
+            }, 3000);
         });
 
-        // Алдаатай асуултад хариулах үед улаан өнгийг шууд арилгах үйлдэл
         document.getElementById('enneagramForm').addEventListener('change', function(e) {
             if (e.target.name && e.target.name.startsWith('q')) {
                 const card = document.getElementById(`card-${e.target.name}`);
