@@ -188,8 +188,40 @@
         }
         button.copy-btn:hover { background-color: #4cae4c; }
         
-        @media (max-width: 600px) {
+        /* =========================================
+           ГАР УТАСАН ДЭЭРХ РЕСПОНСИВ ТОХИРГОО 
+        ========================================= */
+        @media (max-width: 768px) {
+            .user-info-section { flex-direction: column; }
             .input-group { flex: 1 1 100%; }
+            
+            /* Утсан дээр хариултуудыг босоо болгож, дарахад хялбар товчлуур шиг харагдуулах */
+            .options-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .option {
+                width: 100%;
+                flex-direction: row;
+                justify-content: flex-start;
+                background-color: #f8fafc;
+                padding: 12px 15px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                box-sizing: border-box;
+                font-size: 0.95em;
+                text-align: left;
+                transition: background-color 0.2s;
+            }
+            .option:active {
+                background-color: #e2e8f0;
+            }
+            .option input {
+                margin-bottom: 0;
+                margin-right: 15px;
+                transform: scale(1.4);
+            }
         }
     </style>
 </head>
